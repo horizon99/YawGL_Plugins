@@ -2,99 +2,57 @@
 Option Explicit On
 Imports System.Text
 Imports System.Reflection
+Imports Newtonsoft.Json.Linq
 Imports ProjectWingmanPlugin.YawVR_Game_Engine.Plugin
 Imports YawGLAPI
 
 Public Class MemoryHook
     '/// Per Game Settings - Change for Each Game ///
-    Public Yaw As Single
-    Public Pitch As Single
-    Public Roll As Single
-    Public Speed As Single
     Private Const _ProcessName As String = "ProjectWingman-Win64-Shipping" 'Process_Name without the (".exe") for this game
 
-    '***********Offset for Project Wingman official (non beta) version as of 2023
-    'Private Const _MemHook_Yaw As UInt64 = &H4FC
-    'Private Const _MemHook_Pitch As UInt64 = &H4F8
-    'Private Const _MemHook_Roll As UInt64 = &H4F4
-    'Private Const _MemHook_Speed As UInt64 = &H45C
-    'Private Const _BasePtrAddr As UInt64 = &H6C20000 ' Base pointer 
-    'Private Const _Offset0 As UInt64 = &H0
-    'Private Const _Offset1 As UInt64 = &H110
-    'Private Const _Offset2 As UInt64 = &H9C0
-
-    '******************Offsets for Project Wingman Anniversary Edition (beta branch)
-    'Private Const _MemHook_Speed As UInt64 = &H5EC
-    'Private Const _BasePtrAddr As UInt64 = &H8E10040 ' Base pointer 
-    'Private Const _Offset0 As UInt64 = &H0
-    'Private Const _Offset1 As UInt64 = &H20
-    'Private Const _Offset2 As UInt64 = &H750
-
-    'Private Const _MemHook_Yaw As UInt64 = &H4F0
-    'Private Const _MemHook_Pitch As UInt64 = &H4EC
-    'Private Const _MemHook_Roll As UInt64 = &H4E8
-    'Private Const _BasePtrAddr2 As UInt64 = &H8E0E2A0 ' Base pointer 
-    'Private Const _Offset10 As UInt64 = &H90
-    'Private Const _Offset11 As UInt64 = &H3B0
-
-    'Private Const _BasePtrAddr As UInt64 = &H8E10040 ' Base pointer 
-    'Private Const _Offset0 As UInt64 = &H0
-    'Private Const _Offset1 As UInt64 = &H20
-    'Private Const _Offset2 As UInt64 = &H750
-
-    'Offsets for Project Wingman Anniversary Edition (Main branch - Update 12.2024)
-    Private Const _MemHook_Yaw As UInt64 = &H544
-    Private Const _MemHook_Pitch As UInt64 = &H540
-    Private Const _MemHook_Roll As UInt64 = &H53C
-    Private Const _MemHook_Speed As UInt64 = &H6B4
-    Private Const _Offset0 As UInt64 = &H30
-    Private Const _Offset1 As UInt64 = &HC70
-    Private Const _Offset2 As UInt64 = &H7D0
-
-    Private _BaseAddr As UInt64 'This is the memory offset
-    Private _BasePtrAddr As UInt64 = &H95AC140 ' Base pointer 
-    Private _PitchOffsets() As XAttribute
-    Private _RollOffsets() As XAttribute
-    Private _YawOffsets() As XAttribute
-    Private _SpeedOffsets() As XAttribute
-
     'Used by the plugin main loop to Process a MemoryHook.
-    Public Sub Process_MemoryHook(xmlDocument As XDocument)
+    Public Function Process_MemoryHook(_inputName As String, _inputAddrs As UInt64()) As Single
 
-        If IsNothing(xmlDocument) Then
+        If IsNothing(_inputAddrs) = False Then
             Try
-                ' Can't use xml file. Use values hardcoded above instead.
-                _BaseAddr = GetProcessBaseAddress(_ProcessName)
-                _BaseAddr = ReadInt64(_ProcessName, _BaseAddr + _BasePtrAddr)
-                _BaseAddr = ReadInt64(_ProcessName, _BaseAddr + _Offset0)
-                _BaseAddr = ReadInt64(_ProcessName, _BaseAddr + _Offset1)
-                _BaseAddr = ReadInt64(_ProcessName, _BaseAddr + _Offset2)
-                Speed = CSng(ReadSingle(_ProcessName, _BaseAddr + _MemHook_Speed))
-                Yaw = CSng(ReadSingle(_ProcessName, _BaseAddr + _MemHook_Yaw))
-                Pitch = CSng(ReadSingle(_ProcessName, _BaseAddr + _MemHook_Pitch)) * -1
-                Roll = CSng(ReadSingle(_ProcessName, _BaseAddr + _MemHook_Roll)) * -1
+                Dim myValue As Single
+                myValue = ProcessOffsets(_inputAddrs)
+
+                ' This is to prevent "wild" values outside of a mission
+                Select Case _inputName
+                    Case "Speed"
+                        If myValue > 1000 Then myValue = 0
+                    Case "Yaw", "Roll"
+                        If myValue > 180 Or myValue < -180 Then myValue = 0
+                    Case "Pitch"
+                        If myValue > 180 Or myValue < -180 Then myValue = 0
+                        myValue = -myValue
+                End Select
+                Return myValue
             Catch
-                Yaw = 0
-                Pitch = 0
-                Roll = 0
-                Speed = 0
+                Return 0
             End Try
-
         Else
-            ReadXmlOffsets(xmlDocument)
-            Yaw = ProcessXmlOffsets(_YawOffsets)
-            Pitch = ProcessXmlOffsets(_PitchOffsets)
-            Roll = ProcessXmlOffsets(_RollOffsets)
-            Speed = ProcessXmlOffsets(_SpeedOffsets)
+            Return 0
         End If
+    End Function
 
-        ' This is to prevent "wild" values outside of a mission
-        If Speed > 1000 Then Speed = 0
-        If Yaw > 180 Or Yaw < -180 Then Yaw = 0
-        If Pitch > 180 Or Pitch < -180 Then Pitch = 0
-        If Roll > 180 Or Roll < -180 Then Roll = 0
+    Private Function ProcessOffsets(Offset() As UInt64) As Single
+        Try
+            Dim _BaseAddr As UInt64 = GetProcessBaseAddress(_ProcessName)
+            Dim nboffsets As Integer
+            nboffsets = Offset.Count
 
-    End Sub
+            For cnt As Integer = 0 To nboffsets - 2
+                _BaseAddr = ReadInt64(_ProcessName, _BaseAddr + Offset(cnt))
+            Next
+            Return CSng(ReadSingle(_ProcessName, _BaseAddr + Offset(nboffsets - 1)))
+
+        Catch ex As Exception
+            Return 0
+        End Try
+
+    End Function
 
     Private Declare Function ReadProcessMemory Lib "kernel32" Alias "ReadProcessMemory" (ByVal hProcess As Integer, ByVal lpBaseAddress As UInt64, ByVal lpBuffer() As Byte, ByVal nSize As Integer, ByRef lpNumberOfBytesWritten As Integer) As UInteger
     Private Declare Function OpenProcess Lib "kernel32" Alias "OpenProcess" (ByVal dwDesiredAccess As Integer, ByVal bInheritHandle As Integer, ByVal dwProcessId As Integer) As Integer
@@ -176,33 +134,4 @@ Public Class MemoryHook
         End Try
     End Function
 
-    Private Function ProcessXmlOffsets(Offset() As XAttribute) As Single
-        Try
-            _BaseAddr = GetProcessBaseAddress(_ProcessName)
-            Dim nboffsets As Integer
-            nboffsets = CInt(Offset(0).Value)
-            _BasePtrAddr = CType("&H" & Offset(1).Value, UInt64)
-            _BaseAddr = ReadInt64(_ProcessName, _BaseAddr + _BasePtrAddr)
-
-            For cnt As Integer = 2 To nboffsets - 1
-                _BaseAddr = ReadInt64(_ProcessName, _BaseAddr + CType("&H" & Offset(cnt).Value, UInt64))
-            Next
-            Return CSng(ReadSingle(_ProcessName, _BaseAddr + CType("&H" & Offset(nboffsets).Value, UInt64)))
-
-        Catch ex As Exception
-            Return 0
-        End Try
-
-    End Function
-
-    Private Sub ReadXmlOffsets(OffsetXml As XDocument)
-        Try
-            Dim contents As XElement = OffsetXml.Elements("pointers").First
-            _PitchOffsets = contents.Elements("Pitch").First.Attributes.ToArray
-            _RollOffsets = contents.Elements("Roll").First.Attributes.ToArray
-            _YawOffsets = contents.Elements("Yaw").First.Attributes.ToArray
-            _SpeedOffsets = contents.Elements("Speed").First.Attributes.ToArray
-        Catch ex As Exception
-        End Try
-    End Sub
 End Class
