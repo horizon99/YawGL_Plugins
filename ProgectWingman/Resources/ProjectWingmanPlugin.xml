@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!-- 2024-DEC-15 -->
+<!-- Project Wingman V.2.1.1 -->
+<!-- Pointers by Fresh_CH -->
+<!-- all values in hex -->
+<pointers>
+<Yaw
+Offsets="5"
+Offset_0="95AC140"
+Offset_1="30"
+Offset_2 ="C70"
+Offset_3 ="7D0"
+Offset_4 ="544"
+/>
+<Pitch
+Offsets="5"
+Offset_0="95AC140"
+Offset_1="30"
+Offset_2 ="C70"
+Offset_3 ="7D0"
+Offset_4 ="540"
+/>
+<Roll
+Offsets="5"
+Offset_0="95AC140"
+Offset_1="30"
+Offset_2 ="C70"
+Offset_3 ="7D0"
+Offset_4 ="53C"
+/>
+<Speed
+Offsets="5"
+Offset_0="95AC140"
+Offset_1="30"
+Offset_2 ="C70"
+Offset_3 ="7D0"
+Offset_4 ="6B4"
+/>
+</pointers>
