@@ -44,7 +44,7 @@ Namespace YawVR_Game_Engine.Plugin
 
         Public ReadOnly Property Description() As String Implements Game.Description
             Get
-                Description = "<p>Anniversary Edition</p>"
+                Description = "<p>Anniversary Edition</p><p>NB: this plugin only works when launching the game in VR mode.</p>"
             End Get
         End Property
 
@@ -130,19 +130,20 @@ Namespace YawVR_Game_Engine.Plugin
         Private Function LoadXmlDocument() As XDocument
             Try
                 Dim assembly As Assembly = [GetType]().Assembly
-                Dim filename As String = assembly.GetLoadedModules.First.FullyQualifiedName.Replace(".dll", ".xml")
+                Dim filename As String = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) & "\YawVR_GameLink\ObjectFiles\projectwingman"
                 Dim OffsetXml As XDocument
-                If System.IO.File.Exists(filename) Then
-                    ' if present an xml file overloads the file pulled from the repository
+
+                'pull the file from the repository
+                Dim fileContent As New Object
+                Dim t = dispatcher.GetObjectFile("projectwingman", fileContent)
+
+                'if the repo is not available, try to use the local file
+                If IsNothing(fileContent) And System.IO.File.Exists(filename) Then
                     OffsetXml = XDocument.Load(filename)
                 Else
-                    'pull the file from the repository
-                    Dim fileContent As New Object
-                    Dim t = dispatcher.GetObjectFile("projectwingman", fileContent)
                     OffsetXml = XDocument.Parse(fileContent.ToString)
                 End If
                 Return OffsetXml
-
             Catch ex As Exception
                 Return Nothing
             End Try
