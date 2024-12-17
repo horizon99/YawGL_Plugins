@@ -1,0 +1,34 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <RootNamespace>ProjectWingmanPlugin</RootNamespace>
+    <TargetFramework>net8.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+	  <None Remove="Resources\Default.yawglprofile" />
+	  <None Remove="Resources\description.html" />
+	  <None Remove="Resources\wide.png" />
+	  <None Remove="Resources\logo.png" />
+	  <None Remove="Resources\recent.png" />
+  </ItemGroup>
+
+  
+
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\Default.yawglprofile" />
+    <EmbeddedResource Include="Resources\description.html" />
+    <EmbeddedResource Include="Resources\wide.png" />
+    <EmbeddedResource Include="Resources\logo.png" />
+    <EmbeddedResource Include="Resources\recent.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+	<PackageReference Include="System.ComponentModel.Composition" Version="9.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\gameplugins\YawGLAPI\YawGLAPI.csproj" />
+  </ItemGroup>
+
+</Project>
