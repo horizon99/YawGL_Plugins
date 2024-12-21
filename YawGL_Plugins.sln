@@ -5,6 +5,10 @@ VisualStudioVersion = 17.12.35527.113
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectWingmanPlugin", "ProjectWingman\ProjectWingmanPlugin.csproj", "{27DA97ED-A182-49EE-B1D1-EED0C9E6E16B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpacemonkeyPlugin", "SpacemonkeyPlugin\SpacemonkeyPlugin.csproj", "{193933E8-DB98-4534-8A59-51A859D9CCC6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YawGLAPI", "YawGLAPI\YawGLAPI.csproj", "{0D7E48DD-D71D-43A1-94D5-1361B4F69F55}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +19,14 @@ Global
 		{27DA97ED-A182-49EE-B1D1-EED0C9E6E16B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{27DA97ED-A182-49EE-B1D1-EED0C9E6E16B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{27DA97ED-A182-49EE-B1D1-EED0C9E6E16B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{193933E8-DB98-4534-8A59-51A859D9CCC6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{193933E8-DB98-4534-8A59-51A859D9CCC6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{193933E8-DB98-4534-8A59-51A859D9CCC6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{193933E8-DB98-4534-8A59-51A859D9CCC6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0D7E48DD-D71D-43A1-94D5-1361B4F69F55}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0D7E48DD-D71D-43A1-94D5-1361B4F69F55}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0D7E48DD-D71D-43A1-94D5-1361B4F69F55}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0D7E48DD-D71D-43A1-94D5-1361B4F69F55}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -28,7 +28,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\gameplugins\YawGLAPI\YawGLAPI.csproj" />
+    <ProjectReference Include="..\YawGLAPI\YawGLAPI.csproj" />
   </ItemGroup>
 
 </Project>
