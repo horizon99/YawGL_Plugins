@@ -36,6 +36,7 @@ namespace YawVR_Game_Engine.Plugin
         PCars2_UDP uDP;           //Create an UDP object that will retrieve telemetry values from in game.
         private IProfileManager controller;
         private IMainFormDispatcher dispatcher;
+        private string _DefaultProfile => Resources.profile;
 
         public LedEffect DefaultLED() {
             return new LedEffect(
@@ -51,7 +52,7 @@ namespace YawVR_Game_Engine.Plugin
            36f);
         }
 
-        public List<Profile_Component> DefaultProfile() => dispatcher.JsonToComponents(GetString("profile.json"));
+        public List<Profile_Component> DefaultProfile() => dispatcher.JsonToComponents(_DefaultProfile);
 
         public void PatchGame()
         {
@@ -158,30 +159,6 @@ namespace YawVR_Game_Engine.Plugin
             var rr = assembly.GetManifestResourceNames();
             string fullResourceName = $"{assembly.GetName().Name}.Resources.{resourceName}";
             return assembly.GetManifestResourceStream(fullResourceName);
-        }
-
-        private string GetString(string resourceName)
-        {
-
-            var result = string.Empty;
-            try
-            {
-                using var stream = GetStream(resourceName);
-
-                if (stream != null)
-                {
-                    using var reader = new StreamReader(stream);
-                    result = reader.ReadToEnd();
-                }
-            }
-            catch (Exception e)
-            {
-                System.Diagnostics.Debug.WriteLine(e.Message);
-                dispatcher.ShowNotification(NotificationType.ERROR, "Error loading resource - " + e.Message);
-            }
-
-
-            return result;
         }
     }
 }
