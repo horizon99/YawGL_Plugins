@@ -237,7 +237,7 @@ Go into Options-&gt;System and set UDP frequency to 2, and protocol version to p
             "Input_index": 5,
             "Output_index": 1,
             "MultiplierPos": 0.75,
-            "MultiplierNeg": 0.75,
+            "MultiplierNeg": 1.25,
             "Offset": 0.0,
             "Inverse": false,
             "Limit": -1.0,
