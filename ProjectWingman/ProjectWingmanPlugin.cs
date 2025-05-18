@@ -16,7 +16,7 @@ namespace YawVR_Game_Engine.Plugin
 {
     [Export(typeof(Game))]
     [ExportMetadata("Name", "Project Wingman")]
-    [ExportMetadata("Version", "1.3")]
+    [ExportMetadata("Version", "1.4")]
     public class ProjectWingmanPlugin : Game
     {
         private bool running = false;
@@ -97,7 +97,10 @@ namespace YawVR_Game_Engine.Plugin
             return null;
         }
 
-        
+        public Type GetConfigBody()
+        {
+            return null;
+        }
 
         private JObject LoadJsonDocument()
         {

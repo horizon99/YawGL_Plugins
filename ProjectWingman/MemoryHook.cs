@@ -52,7 +52,7 @@ public class MemoryHook
             ulong _BaseAddr = GetProcessBaseAddress(_ProcessName);
             int nboffsets = Offset.Length;
 
-            for (int cnt = 0; cnt < nboffsets - 2; cnt++)
+            for (int cnt = 0; cnt <= nboffsets - 2; cnt++)
             {
                 _BaseAddr = ReadInt64(_ProcessName, _BaseAddr + Offset[cnt]);
             }

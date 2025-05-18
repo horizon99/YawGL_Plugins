@@ -24,11 +24,14 @@
   </ItemGroup>
 
   <ItemGroup>
+	<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
 	<PackageReference Include="System.ComponentModel.Composition" Version="9.0.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\YawGLAPI\YawGLAPI.csproj" />
+    <Reference Include="YawGLAPI">
+      <HintPath>C:\Applications\YawVR\GameEngine2.7\YawGLAPI.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
 </Project>
