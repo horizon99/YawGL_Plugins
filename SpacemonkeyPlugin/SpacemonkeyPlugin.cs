@@ -14,7 +14,7 @@ namespace YawVR_Game_Engine.Plugin
 {
     [Export(typeof(Game))]
     [ExportMetadata("Name", "SpaceMonkey")]
-    [ExportMetadata("Version", "1.0")]
+    [ExportMetadata("Version", "1.1")]
     class SpacemonkeyPlugin : Game {
         
         UdpClient udpClient;
@@ -196,6 +196,11 @@ namespace YawVR_Game_Engine.Plugin
             var rr = assembly.GetManifestResourceNames();
             string fullResourceName = $"{assembly.GetName().Name}.Resources.{resourceName}";
             return assembly.GetManifestResourceStream(fullResourceName);
+        }
+
+        public Type GetConfigBody()
+        {
+            return null;
         }
 
     }

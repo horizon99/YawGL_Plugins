@@ -22,6 +22,8 @@
     <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\YawGLAPI\YawGLAPI.csproj" />
+    <Reference Include="YawGLAPI">
+      <HintPath>C:\Applications\YawVR\GameEngine2.7\YawGLAPI.dll</HintPath>
+    </Reference>
   </ItemGroup>
 </Project>
