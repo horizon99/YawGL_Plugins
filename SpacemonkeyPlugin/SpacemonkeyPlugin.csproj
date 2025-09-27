@@ -23,7 +23,7 @@
   </ItemGroup>
   <ItemGroup>
     <Reference Include="YawGLAPI">
-      <HintPath>C:\Applications\YawVR\GameEngine2.7\YawGLAPI.dll</HintPath>
+      <HintPath>C:\Users\marc\source\repos\GameLink-Plugins\YawGLAPI\bin\Debug\net8.0\YawGLAPI.dll</HintPath>
     </Reference>
   </ItemGroup>
 </Project>

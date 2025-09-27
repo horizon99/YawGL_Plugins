@@ -14,7 +14,7 @@ namespace YawVR_Game_Engine.Plugin
 {
     [Export(typeof(Game))]
     [ExportMetadata("Name", "SpaceMonkey")]
-    [ExportMetadata("Version", "1.1")]
+    [ExportMetadata("Version", "1.2")]
     class SpacemonkeyPlugin : Game {
         
         UdpClient udpClient;
@@ -75,9 +75,23 @@ namespace YawVR_Game_Engine.Plugin
 
         public string[] GetInputData() {
             return new string[] {
-                "Speed","RPM","Steer","Force_long","Force_lat","Pitch","Roll","Yaw",
+                //"Speed","RPM","Steer","Force_long","Force_lat","Pitch","Roll","Yaw",
+                //"suspen_pos_bl","suspen_pos_br","suspen_pos_fl","suspen_pos_fr",
+                //"suspen_vel_bl","suspen_vel_br","suspen_vel_fl","suspen_vel_fr","VelocityX","VelocityY","VelocityZ"
+                "Yaw","Pitch","Roll",
+                "Yaw_velocity","Pitch_velocity","Roll_velocity",
+                "Yaw_accel","Pitch_accel","Roll_accel",
+                "Pos_X","Pox_Y","Pos_Z",
+                "Local_vel_X","Local_vel_Y","Local_vel_Z",
+                "GForce_lateral","GForce_longitudinal","GForce_vertical",
+                "Speed",
                 "suspen_pos_bl","suspen_pos_br","suspen_pos_fl","suspen_pos_fr",
-                "suspen_vel_bl","suspen_vel_br","suspen_vel_fl","suspen_vel_fr","VelocityX","VelocityY","VelocityZ"
+                "suspen_vel_bl","suspen_vel_br","suspen_vel_fl","suspen_vel_fr",
+                "suspen_acc_bl","suspen_acc_br","suspen_acc_fl","suspen_acc_fr",
+                "wheel_patch_bl","wheel_patch_br","wheel_patch_fl","wheel_patch_fr",
+                "Throttle_input","Steering_input","Brake_input","Clutch_input",
+                "Gear",
+                "Engine_rate"
             };
         }
 
@@ -98,66 +112,103 @@ namespace YawVR_Game_Engine.Plugin
             try {
                 while (running) {
                     byte[] rawData = udpClient.Receive(ref remoteIP);
-                    float speed = ReadSingle(rawData, 28, true);
-                    float rpm = ReadSingle(rawData, 148, true) / 30;
 
-                    float VelocityX = (float)(ReadSingle(rawData, 32, true));
-                    float VelocityY = (float)(ReadSingle(rawData, 36, true));
-                    float VelocityZ = (float)(ReadSingle(rawData, 40, true));
+                    float yaw = (float)(ReadSingle(rawData, 8, true) * 57.3);
+                    float pitch = (float)(ReadSingle(rawData, 12, true) * 57.3);
+                    float roll = (float)(ReadSingle(rawData, 16, true) * 57.3);
+                    controller.SetInput(0, yaw);
+                    controller.SetInput(1, pitch);
+                    controller.SetInput(2, roll);
 
+                    float yaw_velocity = (float)(ReadSingle(rawData, 20, true));
+                    float pitch_velocity = (float)(ReadSingle(rawData, 24, true));
+                    float roll_velocity = (float)(ReadSingle(rawData, 28, true));
+                    controller.SetInput(3, yaw_velocity);
+                    controller.SetInput(4, pitch_velocity);
+                    controller.SetInput(5, roll_velocity);
 
+                    float yaw_acceleration = (float)(ReadSingle(rawData, 32, true));
+                    float pitch_acceleration = (float)(ReadSingle(rawData, 36, true));
+                    float roll_acceleration = (float)(ReadSingle(rawData, 40, true));
+                    controller.SetInput(6, yaw_acceleration);
+                    controller.SetInput(7, pitch_acceleration);
+                    controller.SetInput(8, roll_acceleration);
 
-                    float steer = ReadSingle(rawData, 120, true);
-                    float g_long = ReadSingle(rawData, 140, true);  // *-5
-                    float g_lat = ReadSingle(rawData, 136, true); // *-3
-                    float forwardX = ReadSingle(rawData, 56, true);
-                    float forwardY = (float)(ReadSingle(rawData, 60, true));
-                    float forwardZ = (float)(ReadSingle(rawData, 64, true));
+                    float position_x = (float)(ReadSingle(rawData, 44, true));
+                    float position_y = (float)(ReadSingle(rawData, 48, true));
+                    float position_z = (float)(ReadSingle(rawData, 52, true));
+                    controller.SetInput(9, position_x);
+                    controller.SetInput(10, position_y);
+                    controller.SetInput(11, position_z);
 
-                    float rollX = ReadSingle(rawData, 44, true);
-                    float rollY = (float)(ReadSingle(rawData, 48, true));
-                    float rollZ = (float)(ReadSingle(rawData, 52, true));
+                    float local_velocity_x = (float)(ReadSingle(rawData, 56, true));
+                    float local_velocity_y = (float)(ReadSingle(rawData, 60, true));
+                    float local_velocity_z = (float)(ReadSingle(rawData, 64, true));
+                    controller.SetInput(12, local_velocity_x);
+                    controller.SetInput(13, local_velocity_y);
+                    controller.SetInput(14, local_velocity_z);
 
-                    float susp_pos_bl = (float)ReadSingle(rawData, 68, true);
-                    float susp_pos_br = (float)ReadSingle(rawData, 72, true);
-                    float susp_pos_fl = (float)ReadSingle(rawData, 76, true);
-                    float susp_pos_fr = (float)ReadSingle(rawData, 80, true);
-                    float susp_velo_bl = (float)ReadSingle(rawData, 84, true);
-                    float susp_velo_br = (float)ReadSingle(rawData, 88, true);
-                    float susp_velo_fl = (float)ReadSingle(rawData, 92, true);
-                    float susp_velo_fr = (float)ReadSingle(rawData, 96, true);
+                    float gforce_lateral = (float)(ReadSingle(rawData, 68, true));
+                    float gforce_longitudinal = (float)(ReadSingle(rawData, 72, true));
+                    float gforce_vertical = (float)(ReadSingle(rawData, 76, true));
+                    controller.SetInput(15, gforce_lateral);
+                    controller.SetInput(16, gforce_longitudinal);
+                    controller.SetInput(17, gforce_vertical);
 
-                    float wheel_speed_rl = (float)ReadSingle(rawData, 100, true);
-                    float wheel_speed_rr = (float)ReadSingle(rawData, 104, true);
+                    float speed = (float)(ReadSingle(rawData, 80, true));
+                    controller.SetInput(18, speed);
 
+                    float susp_pos_bl = (float)ReadSingle(rawData, 84, true);
+                    float susp_pos_br = (float)ReadSingle(rawData, 88, true);
+                    float susp_pos_fl = (float)ReadSingle(rawData, 92, true);
+                    float susp_pos_fr = (float)ReadSingle(rawData, 96, true);
+                    float susp_velo_bl = (float)ReadSingle(rawData, 100, true);
+                    float susp_velo_br = (float)ReadSingle(rawData, 104, true);
+                    float susp_velo_fl = (float)ReadSingle(rawData, 108, true);
+                    float susp_velo_fr = (float)ReadSingle(rawData, 112, true);
+                    float susp_accel_bl = (float)ReadSingle(rawData, 116, true);
+                    float susp_accel_br = (float)ReadSingle(rawData, 120, true);
+                    float susp_accel_fl = (float)ReadSingle(rawData, 124, true);
+                    float susp_accel_fr = (float)ReadSingle(rawData, 128, true);
+                    controller.SetInput(19, susp_pos_bl);
+                    controller.SetInput(20, susp_pos_br);
+                    controller.SetInput(21, susp_pos_fl);
+                    controller.SetInput(22, susp_pos_fr);
+                    controller.SetInput(23, susp_velo_bl);
+                    controller.SetInput(24, susp_velo_br);
+                    controller.SetInput(25, susp_velo_fl);
+                    controller.SetInput(26, susp_velo_fr);
+                    controller.SetInput(27, susp_accel_bl);
+                    controller.SetInput(28, susp_accel_br);
+                    controller.SetInput(29, susp_accel_fl);
+                    controller.SetInput(30, susp_accel_fr);
 
-                    float pitch = (float)(Math.Asin(-forwardY) * 57.3);
-                    float roll = -(float)(Math.Asin(-rollY) * 57.3);
-                    float yaw = (float)Math.Atan2(forwardY + forwardX, forwardZ) * 57.3f;
+                    float wheel_patch_bl = (float)ReadSingle(rawData, 132, true);
+                    float wheel_patch_br = (float)ReadSingle(rawData, 136, true);
+                    float wheel_patch_fl = (float)ReadSingle(rawData, 140, true);
+                    float wheel_patch_fr = (float)ReadSingle(rawData, 144, true);
+                    controller.SetInput(31, wheel_patch_bl);
+                    controller.SetInput(32, wheel_patch_br);
+                    controller.SetInput(33, wheel_patch_fl);
+                    controller.SetInput(34, wheel_patch_fr);
 
+                    float throttle_input = (float)(ReadSingle(rawData, 148, true));
+                    float steering_input = (float)(ReadSingle(rawData, 152, true));
+                    float brake_input = (float)(ReadSingle(rawData, 156, true));
+                    float clutch_input = (float)(ReadSingle(rawData, 160, true));
+                    controller.SetInput(35, throttle_input);
+                    controller.SetInput(36, steering_input);
+                    controller.SetInput(37, brake_input);
+                    controller.SetInput(38, clutch_input);
 
-                    controller.SetInput(0, speed);
-                    controller.SetInput(1, rpm);
-                    controller.SetInput(2, steer);
+                    float gear = (float)(ReadSingle(rawData, 164, true));
+                    float engine_rate = (float)(ReadSingle(rawData, 172, true));
+                    controller.SetInput(39, gear);
+                    controller.SetInput(40, engine_rate);
 
-                    controller.SetInput(3, g_long);
-                    controller.SetInput(4, g_lat);
-
-                    controller.SetInput(5, pitch);
-                    controller.SetInput(6, roll);
-                    controller.SetInput(7, yaw);
-                    controller.SetInput(8, susp_pos_bl);
-                    controller.SetInput(9, susp_pos_br);
-                    controller.SetInput(10, susp_pos_fl);
-                    controller.SetInput(11, susp_pos_fr);
-                    controller.SetInput(12, susp_velo_bl);
-                    controller.SetInput(13, susp_velo_br);
-                    controller.SetInput(14, susp_velo_fl);
-                    controller.SetInput(15, susp_velo_fr);
-                    controller.SetInput(16, VelocityX);
-                    controller.SetInput(17, VelocityY);
-                    controller.SetInput(18, VelocityZ);
-
+                    // float pitch = (float)(Math.Asin(-forwardY) * 57.3);
+                    // float roll = -(float)(Math.Asin(-rollY) * 57.3);
+                    // float yaw = (float)Math.Atan2(forwardY + forwardX, forwardZ) * 57.3f;
                 }
 
             }
