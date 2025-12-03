@@ -1,0 +1,13 @@
+{
+  "profiles": {
+    "ProjectWingmanPlugin": {
+      "commandName": "Project",
+      "workingDirectory": "C:\\Applications\\YawVR\\GameEngine2.7"
+    },
+    "GameLink": {
+      "commandName": "Executable",
+      "executablePath": "C:\\Applications\\YawVR\\GameEngine2.7\\YawVR GameLink.exe",
+      "workingDirectory": "C:\\Applications\\YawVR\\GameEngine2.7"
+    }
+  }
+}
