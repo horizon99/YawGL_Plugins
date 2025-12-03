@@ -29,6 +29,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\SpacemonkeyPlugin\SpacemonkeyPlugin.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Reference Include="YawGLAPI">
       <HintPath>C:\Applications\YawVR\GameEngine2.7\YawGLAPI.dll</HintPath>
     </Reference>
