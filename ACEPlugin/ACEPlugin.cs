@@ -18,7 +18,7 @@ namespace YawVR_Game_Engine.Plugin
 {
     [Export(typeof(Game))]
     [ExportMetadata("Name", "Assetto Corsa Evo")]
-    [ExportMetadata("Version", "1.1")]
+    [ExportMetadata("Version", "1.3")]
 
     public class ACEPlugin : Game
     {
@@ -163,7 +163,9 @@ namespace YawVR_Game_Engine.Plugin
 
 
         private static readonly string[] inputs = {
-            "RPM","Speed","Gas","Brake","TurboBoost","accG_X","accG_Y","accG_Z","Heading","Pitch","Roll","SuspensionTravel_FL","SuspensionTravel_FR","SuspensionTravel_RL","SuspensionTravel_RR"
+            "RPM","Speed","Gas","Brake","TurboBoost","accG_X","accG_Y","accG_Z", 
+            "Heading","Pitch","Roll","SuspensionTravel_FL","SuspensionTravel_FR","SuspensionTravel_RL","SuspensionTravel_RR",
+            "AngularVel_X", "AngularVel_Y(Yaw)", "AngularVel_Z"
         };
 
         public void Exit()
@@ -236,6 +238,10 @@ namespace YawVR_Game_Engine.Plugin
                 controller.SetInput(12, p.SuspensionTravel[1]);
                 controller.SetInput(13, p.SuspensionTravel[2]);
                 controller.SetInput(14, p.SuspensionTravel[3]);
+                controller.SetInput(15, p.LocalAngularVelocity[0]);
+                controller.SetInput(16, p.LocalAngularVelocity[1]);
+                controller.SetInput(17, p.LocalAngularVelocity[2]);
+
                 Thread.Sleep(20);
             }
         }
